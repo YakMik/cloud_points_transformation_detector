@@ -6,6 +6,6 @@ function [angl] = getAnglBetweenVect(V, V_trans)
 % Output parameters:
 % angl = angle of an between vectors
 
-    angl = acos(V(1)*V_trans(1) + V(2)*V_trans(2));
+    angl = acos(V(1)*V_trans(1) + V(2)*V_trans(2)) / sqrt(sum(V .* V)) / sqrt(sum(V_trans .* V_trans));
 end
 

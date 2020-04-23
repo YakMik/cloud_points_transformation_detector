@@ -36,16 +36,23 @@ function [ x_offs y_offs angl ] = getTransform( x, y, x_trans, y_trans )
         angle = angl_1_trans2;
     end
     
+    V1_rot = V1*[cos(angle) -sin(angle); sin(angle) cos(angle)];
+    V2_rot = V2*[cos(angle) -sin(angle); sin(angle) cos(angle)];
+    
+    if ~( (sum(abs(V1_rot - V1_trans)) < 0.001 && sum(abs(V2_rot - V2_trans)) < 0.001) || (sum(abs(V2_rot - V1_trans)) < 0.001 && sum(abs(V1_rot - V2_trans)) < 0.001) )
+        angle = -angle;
+    end
+    
     angls = [angle angle+pi/2 angle+pi angle+pi+pi/2];
     cos_angls = cos(angls);
     sin_angls = sin(angls);
     
     sum_err = zeros(1,length(angls));
-    for i = 1:4
-        x_check =  x .* cos_angls(i) + y .* sin_angls(i);
-        y_check = -x .* sin_angls(i) + y .* cos_angls(i);
+    for i = 1:length(angls)
+        x_check =  x_c .* cos_angls(i) + y_c .* sin_angls(i);
+        y_check = -x_c .* sin_angls(i) + y_c .* cos_angls(i);
         
-        sum_err(i) = sum( sqrt( (x_trans-x_check).^2 + (y_trans - y_check).^2 ) );
+        sum_err(i) = sum( sqrt( (x_trans_c-x_check).^2 + (y_trans_c - y_check).^2 ) );
     end
     
     [minVal minInd] = min(sum_err);
